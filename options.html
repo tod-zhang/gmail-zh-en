@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gmail 中译英 · 设置</title>
+  <style>
+    :root {
+      --bg: #f6f8fc; --card: #fff; --text: #1f1f1f; --muted: #5e5e5e; --line: #dadce0;
+      --accent: #0b57d0; --accent-soft: #e8f0fe; --ok: #146c2e; --err: #b3261e;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1b1b1f; --card: #26262b; --text: #e8e8ea; --muted: #a8a8ae; --line: #3c3c43;
+        --accent: #a8c7fa; --accent-soft: #2b3a55; --ok: #7dd99a; --err: #f2b8b5;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font: 14px/1.6 -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+    }
+    main { max-width: 720px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { margin: 0 0 4px; font-size: 24px; font-weight: 600; }
+    .lead { margin: 0 0 28px; color: var(--muted); }
+    section { margin-bottom: 16px; padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); }
+    h2 { margin: 0 0 14px; font-size: 15px; font-weight: 600; }
+    .field + .field { margin-top: 18px; }
+    label.name { display: block; margin-bottom: 6px; font-weight: 500; }
+    .help { margin-top: 6px; font-size: 13px; color: var(--muted); }
+    input[type="text"], input[type="password"], select, textarea {
+      width: 100%; padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px;
+      background: var(--card); color: var(--text); font: inherit;
+    }
+    textarea { min-height: 96px; resize: vertical; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; }
+    textarea#about { font-family: inherit; font-size: 14px; min-height: 64px; }
+    textarea#glossary { min-height: 260px; }
+    input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+    .row { display: flex; gap: 8px; }
+    .row input { flex: 1; }
+    .check { display: flex; gap: 10px; align-items: flex-start; }
+    .check input { margin-top: 4px; }
+    .check + .check { margin-top: 14px; }
+    button {
+      height: 38px; padding: 0 18px; border: 1px solid var(--line); border-radius: 19px;
+      background: var(--card); color: var(--accent); font: inherit; font-weight: 500; cursor: pointer;
+    }
+    button.primary { background: var(--accent); border-color: var(--accent); color: var(--card); }
+    button:disabled { opacity: .5; cursor: default; }
+    a, .linkish { color: var(--accent); }
+    .linkish { padding: 0; height: auto; border: none; background: none; text-decoration: underline; font-weight: 400; }
+    kbd {
+      padding: 1px 6px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px;
+      font: 12px ui-monospace, Menlo, monospace; background: var(--bg);
+    }
+    .bar { position: sticky; bottom: 0; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 14px 0; background: var(--bg); }
+    #msg { color: var(--muted); }
+    #msg.ok { color: var(--ok); }
+    #msg.err { color: var(--err); }
+    #testOut {
+      display: none; margin-top: 12px; padding: 12px; border-radius: 8px; background: var(--accent-soft);
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Gmail 中译英</h1>
+  <p class="lead">在 Gmail 回复框里写中文，点「译 英文」或按快捷键翻成英文，发送前还会检查有没有漏翻的中文。</p>
+
+  <section>
+    <h2>DeepSeek</h2>
+    <div class="field">
+      <label class="name" for="apiKey">API Key</label>
+      <div class="row">
+        <input id="apiKey" type="password" autocomplete="off" spellcheck="false" placeholder="sk-...">
+        <button id="toggleKey" type="button">显示</button>
+      </div>
+      <div class="help">在 <a href="https://platform.deepseek.com/api_keys" target="_blank" rel="noreferrer">platform.deepseek.com</a> 创建。只保存在这台电脑的浏览器里，只会发给 api.deepseek.com。</div>
+    </div>
+    <div class="field">
+      <label class="name" for="model">模型</label>
+      <select id="model"></select>
+    </div>
+  </section>
+
+  <section>
+    <h2>翻译风格</h2>
+    <div class="field">
+      <label class="name" for="tone">语气</label>
+      <select id="tone"></select>
+    </div>
+    <div class="field">
+      <label class="name" for="about">关于你</label>
+      <textarea id="about"></textarea>
+      <div class="help">会作为背景告诉模型，帮它选对用词和语气。</div>
+    </div>
+    <div class="field">
+      <label class="name" for="glossary">术语表</label>
+      <textarea id="glossary" spellcheck="false"></textarea>
+      <div class="help">每行一条，格式「中文 = English」。原文里出现这些词时，会固定翻成右边的英文。</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>行为</h2>
+    <label class="check">
+      <input id="interceptSend" type="checkbox">
+      <span><strong>发送前检查中文</strong><br><span class="help">点「发送」或按 <kbd>⌘</kbd> <kbd>Enter</kbd> 时，如果你写的内容里还有中文，先弹出翻译确认。签名和引用的原邮件不算。</span></span>
+    </label>
+    <label class="check">
+      <input id="useContext" type="checkbox">
+      <span><strong>参考客户来信</strong><br><span class="help">把你正在回复的那封邮件一起发给模型作参考，译文会更贴合上下文。关掉后只发送你写的内容。</span></span>
+    </label>
+    <div class="field">
+      <label class="name">快捷键</label>
+      <div><kbd id="shortcut">…</kbd> <button id="editShortcut" class="linkish" type="button">修改快捷键</button></div>
+    </div>
+  </section>
+
+  <div class="bar">
+    <button id="save" class="primary" type="button">保存</button>
+    <button id="test" type="button">保存并测试翻译</button>
+    <button id="reset" class="linkish" type="button">恢复默认风格设置</button>
+    <span id="msg" role="status"></span>
+  </div>
+  <div id="testOut"></div>
+</main>
+<script src="defaults.js"></script>
+<script src="options.js"></script>
+</body>
+</html>

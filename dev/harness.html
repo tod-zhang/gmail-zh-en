@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Mock Gmail harness</title>
+<link rel="stylesheet" href="../content.css">
+<style>
+  body { font: 14px Arial, sans-serif; margin: 24px; background: #fff; }
+  .a3s { padding: 12px; border: 1px solid #ddd; margin-bottom: 16px; }
+  .compose { border: 1px solid #ccc; border-radius: 12px; padding: 12px; }
+  .editable { min-height: 140px; outline: none; }
+  .aoO { background: #0b57d0; color: #fff; border-radius: 18px; padding: 9px 20px; cursor: pointer; display: inline-block; }
+  #log { margin-top: 16px; font: 12px monospace; white-space: pre; }
+</style>
+<script>
+  window.__log = [];
+  function fakeBackground(msg) {
+    if (msg.type === 'getShortcut') return '⌃⇧Y';
+    if (msg.type === 'openOptions') { __log.push('OPEN_OPTIONS'); return; }
+    if (msg.type === 'translate') {
+      window.__lastReq = msg;
+      if (window.__failNext) { window.__failNext = false; return { ok: false, code: 'NO_KEY', error: '还没有填写 DeepSeek API Key' }; }
+      let out = msg.html.replace(/[一-鿿，。、：！？]+/g, (m) => `EN(${m.length})`);
+      if (!window.__clean) out += '<img src="x" onerror="window.__pwned=1"><script>window.__pwned=2<\/script><a href="https://evil.example">evil</a><u data-k="999">u</u><iframe src="https://evil.example"></iframe>';
+      return { ok: true, html: out };
+    }
+  }
+  window.chrome = {
+    runtime: {
+      id: 'test',
+      lastError: null,
+      sendMessage(msg, cb) { setTimeout(() => cb && cb(fakeBackground(msg)), 200); },
+      onMessage: { addListener(fn) { window.__onMsg = fn; } },
+    },
+    storage: { local: { get: async () => ({}) }, onChanged: { addListener() {} } },
+  };
+</script>
+</head>
+<body>
+  <h2 class="hP">RE: price list request</h2>
+  <div class="a3s aiL">Hello,<br>Could you send us your price list for cartridge seals?<div class="gmail_quote">On Mon wrote:<blockquote>old old old</blockquote></div></div>
+
+  <table><tbody><tr><td>
+    <div class="compose" id="compose">
+      <div contenteditable="true" role="textbox" g_editable="true" aria-label="邮件正文" class="Am Al editable" id="body"><div dir="ltr"><div>Hi Maria,</div><div><br></div><div>您好，我们的<b style="color:red">集装式机械密封</b>型号 CS-208U 交期是 <a href="https://cowseal.com">15天</a>。</div><div><img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" alt="pic" width="1"></div><div><br></div><span class="gmail_signature_prefix">-- </span><br><div class="gmail_signature" data-smartmail="gmail_signature">Best regards,<br>Todd 陶</div></div></div>
+      <table><tbody><tr class="btC">
+        <td class="gU Up"><div class="dC"><div role="button" class="T-I J-J5-Ji aoO v7 T-I-atl L3" data-tooltip="发送 ‪(⌘Enter)‬" tabindex="1">发送</div><div role="button" class="hG" aria-label="更多发送选项">▾</div></div></td>
+        <td>Aa 📎 🔗</td>
+      </tr></tbody></table>
+    </div>
+  </td></tr></tbody></table>
+  <div id="log"></div>
+
+  <script>
+    // Mimic Gmail: send fires on mouseup of the send button, or ⌘/Ctrl+Enter in the editor.
+    function sent(how) {
+      __log.push('SENT:' + how + ':' + document.getElementById('body').innerHTML);
+      document.getElementById('compose').remove();
+    }
+    document.addEventListener('mouseup', (e) => { if (e.target.closest('.aoO')) sent('click'); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && e.target.closest('#body')) sent('key');
+    });
+  </script>
+  <script src="../defaults.js"></script>
+  <script src="../content.js"></script>
+</body>
+</html>
