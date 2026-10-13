@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Store screenshot</title>
+<link rel="stylesheet" href="../content.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { background: #f6f8fc; font: 14px/1.5 "Google Sans", Roboto, "PingFang SC", Arial, sans-serif; color: #1f1f1f; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 28px 24px; }
+  .thread { background: #fff; border-radius: 16px; padding: 20px 28px 28px; }
+  h2.hP { font-size: 22px; font-weight: 400; margin: 4px 0 20px; }
+  .msg { display: flex; gap: 14px; }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: #e37400; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 500; flex: none; }
+  .avatar.me { background: #0b57d0; }
+  .from { font-weight: 600; } .from span { font-weight: 400; color: #5e5e5e; font-size: 12px; }
+  .a3s { margin-top: 8px; }
+  .compose { margin-top: 24px; border-radius: 14px; box-shadow: 0 1px 3px rgba(60,64,67,.3), 0 4px 8px 3px rgba(60,64,67,.15); padding: 14px 18px 12px; flex: 1; }
+  .to { color: #444746; margin-bottom: 10px; }
+  .editable { min-height: 150px; outline: none; }
+  .gmail_signature { color: #5e5e5e; }
+  .btC td { vertical-align: middle; }
+  .aoO { display: inline-flex; align-items: center; height: 36px; padding: 0 24px; border-radius: 18px; background: #0b57d0; color: #fff; font-weight: 500; }
+  .tools { color: #444746; padding-left: 14px; letter-spacing: 10px; }
+</style>
+<script>
+  const EN = '<div data-k="0">Hi Maria,</div><div data-k="1"><br data-k="2"></div><div data-k="3">Thank you for your inquiry. Attached is our quotation for the CS-208U <b data-k="4">cartridge mechanical seal</b>, with SiC vs. SiC faces and FKM O-rings.</div><div data-k="5"><br data-k="6"></div><div data-k="7">Our standard lead time is 15 days, and samples can be shipped within one week. If convenient, please share the pump model and the medium so we can confirm the right seal solution for you.</div><div data-k="8"><br data-k="9"></div>';
+  window.chrome = {
+    runtime: {
+      id: 'demo', lastError: null,
+      sendMessage(msg, cb) {
+        const res = msg.type === 'getShortcut' ? '⌃⇧Y' : msg.type === 'translate' ? { ok: true, html: EN } : undefined;
+        setTimeout(() => cb && cb(res), 1200);
+      },
+      onMessage: { addListener() {} },
+    },
+    storage: { local: { get: async () => ({}) }, onChanged: { addListener() {} } },
+  };
+</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="thread">
+    <h2 class="hP">RE: Inquiry for cartridge seals</h2>
+    <div class="msg">
+      <div class="avatar">M</div>
+      <div>
+        <div class="from">Maria Lopez <span>&lt;maria@example.com&gt;</span></div>
+        <div class="a3s">Hello,<br>We are looking for cartridge mechanical seals for our centrifugal pumps. Could you send us a quotation for model CS-208U, together with the lead time?<br>Best regards,<br>Maria</div>
+      </div>
+    </div>
+    <div class="msg">
+      <div class="avatar me" style="margin-top:24px">T</div>
+      <div class="compose">
+        <div class="to">回复 Maria Lopez</div>
+        <div contenteditable="true" role="textbox" g_editable="true" class="Am Al editable"><div dir="ltr"><div>Hi Maria,</div><div><br></div><div>感谢您的询价。附件是 CS-208U <b>集装式机械密封</b>的报价，材质为碳化硅对碳化硅，氟橡胶 O 型圈。</div><div><br></div><div>标准交期是 15 天，样品可以在一周内寄出。如果方便的话，请提供泵的型号和介质，我们可以帮您确认密封方案。</div><div><br></div><span class="gmail_signature_prefix">-- </span><br><div class="gmail_signature" data-smartmail="gmail_signature">Best regards,<br>Todd<br>Sales Manager | Cowseal</div></div></div>
+        <table style="margin-top:12px"><tbody><tr class="btC">
+          <td class="gU Up"><div role="button" class="T-I aoO" data-tooltip="发送">发送</div></td>
+          <td class="tools">Aa 📎 🔗 ☺</td>
+        </tr></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="../defaults.js"></script>
+<script src="../content.js"></script>
+<script>
+  const mode = location.hash.slice(1);
+  if (mode) setTimeout(() => {
+    document.querySelector('.zhen-btn').click();
+    if (mode === 'replaced') setTimeout(() => {
+      document.getElementById('zhen-translate-ui').shadowRoot.querySelector('button.primary').click();
+      getSelection().removeAllRanges();
+    }, 1600);
+  }, 400);
+</script>
+</body>
+</html>

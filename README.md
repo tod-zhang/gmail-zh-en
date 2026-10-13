@@ -1,4 +1,4 @@
-# Gmail 中译英回复
+# 中译英回复 for Gmail
 
 在 Gmail 回复框里用中文写，一键翻成英文商务邮件（DeepSeek）。发送前会检查有没有漏翻的中文。
 
@@ -31,3 +31,14 @@ Gmail 改版可能让按钮不出现或拦截失效。打开 Gmail，按 `⌥⌘
 | `background.js` | 调 DeepSeek API（Key 只在这里用） |
 | `options.html` / `options.js` | 设置页 |
 | `defaults.js` | 默认设置、语气、术语表 |
+
+## 发布到 Chrome 应用商店
+
+1. 改 `manifest.json` 里的 `version`（每次上传都要比上次大）。
+2. 打包（不含 `dev/`、`store/`）：
+
+   ```bash
+   V=$(python3 -c "import json;print(json.load(open('manifest.json'))['version'])"); mkdir -p dist; zip -q -X dist/gmail-zh-en-$V.zip manifest.json background.js content.js content.css defaults.js options.html options.js icons/*.png
+   ```
+
+3. 在 [开发者后台](https://chrome.google.com/webstore/devconsole) 上传 ZIP。商店文案、权限说明、隐私政策链接见 `store/listing.md`，截图在 `store/`。

@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Gmail 中译英回复",
+  "name": "中译英回复 for Gmail",
   "version": "0.1.0",
   "description": "在 Gmail 回复框里把中文一键翻译成英文商务邮件（DeepSeek），发送前检查有没有漏翻的中文。",
   "permissions": ["storage"],
@@ -24,7 +24,7 @@
     "open_in_tab": true
   },
   "action": {
-    "default_title": "Gmail 中译英：打开设置",
+    "default_title": "中译英回复：打开设置",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",
